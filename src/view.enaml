@@ -1,0 +1,122 @@
+"""
+描述: 通过文件对话窗口或者拖放目标文件到工具中, 识别到该文件的路径. 点击运行按钮
+    生成结果文件.
+注: 文件仅支持 html.
+"""
+from os.path import exists
+
+from lk_logger import lk
+
+from enaml.layout.api import align, hbox, vbox
+from enaml.styling import *
+from enaml.widgets.api import *
+
+
+enamldef Main(Window): window:
+    title = 'HTML to image base64 embedded'
+
+    attr path = ""
+    attr tip = ""
+
+    Container:
+        constraints = [
+            hbox(_label, _field, _browse, _run),
+            vbox(_label, _tip),
+            hbox(_tip, _progress),
+            align('v_center', _label, _field, _browse, _run),
+            _browse.height == _field.height,
+        ]
+        Label: _label:
+            text = 'Select html:'
+        Field: _field:
+            hug_width = 'ignore'
+            hug_height = 'ignore'
+            text << window.path
+            text ::
+                # when text changed, clear the tip
+                window.tip = ''
+                _progress.value = 0
+        PushButton: _browse:
+            text = 'Browse'
+            clicked ::
+                path = FileDialogEx.get_open_file_name(window)
+                if path:
+                    window.path = path
+        PushButton: _run:
+            text = 'Run'
+            clicked ::
+                # validate path
+                path = _field.text
+                if not exists(path):
+                    lk.loga('The file doesn\'t exist!', path)
+                    window.tip = 'The file doesn\'t exist!'
+                elif not path.endswith('.html'):
+                    lk.loga('Please input a .html file', path)
+                    window.tip = 'Please input a .html file.'
+                else:
+                    import html_base64
+                    for progress in html_base64.main(path):
+                        _progress.value = int(progress * 100)
+                    window.tip = 'Successfully generated base64 file!'
+
+        Label: _tip:
+            text << window.tip
+        ProgressBar: _progress:
+            pass
+
+    StyleSheet:
+        Style:
+            element = 'Field'
+            Setter:  # FIXME: no effect
+                field = 'width'
+                value = '100px'
+            Setter:  # FIXME: no effect
+                field = 'height'
+                value = '40px'
+            Setter:
+                field = 'padding-left'
+                value = '2px'
+            Setter:
+                field = 'padding-right'
+                value = '2px'
+        Style:  # font
+            Setter:
+                field = 'font-family'
+                value = 'Microsoft YaHei UI'
+            Setter:
+                field = 'font-size'
+                value = '13px'
+#        Style:  # border
+#            element = 'PushButton, Field'
+#            Setter:
+#                field = 'border'
+#                value = '1px solid #cccccc'
+#            Setter:
+#                field = 'border-radius'
+#                value = '4px'
+        Style:  # button
+            element = 'PushButton'
+            Setter:
+                field = 'background-color'
+                value = '#ffffff'
+            Setter:
+                field = 'border'
+                value = '1px solid #cccccc'
+            Setter:
+                field = 'border-radius'
+                value = '4px'
+            Setter:
+                field = 'padding-left'
+                value = '10px'
+            Setter:
+                field = 'padding-right'
+                value = '10px'
+        Style:  # button on focus
+            element = 'PushButton'
+            pseudo_class = 'pressed'
+            Setter:
+                field = 'background-color'
+                value = '#0078d7'
+            Setter:
+                field = 'color'
+                value = '#ffffff'
