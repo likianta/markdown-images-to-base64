@@ -56,3 +56,7 @@
 
 1. 本程序生成的 base64 编码的 html 体积上比浏览器生成的 .mhtml 略小一些
 2. base64 编码的 html 比原 html + 原图片的体积略大, 这是因为 base64 编码的原因 (base64 编码的图片会比原图大 1/3, 原理可上网查询)
+
+## 项目依赖须知
+
+enaml 模块在 Python 3.9 中启动会报错 (相关见 [这个讨论](https://docs.python.org/3/whatsnew/3.8.html#cpython-bytecode-changes)), 请使用 Python 3.8 或以下版本.

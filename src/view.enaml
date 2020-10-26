@@ -22,9 +22,10 @@ enamldef Main(Window): window:
         constraints = [
             hbox(_label, _field, _browse, _run),
             vbox(_label, _tip),
-            hbox(_tip, _progress),
+            hbox(_progress, _open, _tip),
             align('v_center', _label, _field, _browse, _run),
             _browse.height == _field.height,
+            _progress.height == _open.height,
         ]
         Label: _label:
             text = 'Select html:'
@@ -59,10 +60,24 @@ enamldef Main(Window): window:
                         _progress.value = int(progress * 100)
                     window.tip = 'Successfully generated base64 file!'
 
-        Label: _tip:
-            text << window.tip
         ProgressBar: _progress:
             pass
+        PushButton: _open:
+            text = 'Open'
+            enabled << bool(_field.text.endswith('.html'))
+            clicked ::
+                if window.tip == 'Successfully generated base64 file!':
+                    path = _field.text.replace('.html', '_base64.html')
+                else:
+                    path = _field.text
+                if exists(path):
+                    import os
+                    from os.path import abspath
+                    os.startfile(abspath(path))
+                else:
+                    window.tip = 'Cannot open file because file not exists!'
+        Label: _tip:
+            text << window.tip
 
     StyleSheet:
         Style:
