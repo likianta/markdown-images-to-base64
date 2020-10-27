@@ -58,6 +58,7 @@ enamldef Main(Window): window:
                         #   to None to continue.
 
                     if processor:
+                        window.tip = 'Processing, please wait...'
                         window.ofile = processor.main(ifile)
                         window.tip = 'Successfully generated base64 file!'
 

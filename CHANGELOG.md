@@ -9,6 +9,7 @@ current version: 0.3.2
 - 新增: 支持 Markdown 直接转换为单文件 html
 - 新增: enaml 客户端支持输入 .md 文件
 - 移除: enaml 客户端移除进度条
+- 新增: enaml 客户端等待提示
 
 ## v0.2 (2020-10-26)
 

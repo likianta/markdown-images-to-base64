@@ -57,11 +57,18 @@ def fetch_image_links(doc: str):
 
 def compose_html(doc):
     import markdown2
-    html = markdown2.markdown(doc, extras=[
+    html = markdown2.markdown(doc, extras={
         # https://github.com/trentm/python-markdown2/wiki/Extras
-        'code-friendly', 'cuddled-lists', 'fenced-code-blocks', 'header-ids',
-        'numbering', 'strike', 'tables', 'task-list', 'toc',
-    ])
+        'code-friendly': None, 'cuddled-lists': None,
+        'fenced-code-blocks': None, 'header-ids': None, 'numbering': None,
+        'strike': None, 'tables': None, 'task-list': None, 'toc': None,
+        'html-classes': {
+            # refer to typora exported html tags
+        }
+    })
+    
+    # css: TODO
+    
     return html
 
 
