@@ -8,8 +8,8 @@ def main(ifile, ofile=''):
     """
     
     :param ifile: .html file.
-    :param ofile: Output .html file. If empty, use '{ifilename}_base64.html' as
-        default.
+    :param ofile: Output .html file. If empty, use '{ifilename}_base64.html'
+        instead.
     :return:
     """
     ifile = abspath(ifile).replace('\\', '/')

@@ -2,3 +2,4 @@ pyside2
 qtpy
 enaml
 lk-logger
+markdown2

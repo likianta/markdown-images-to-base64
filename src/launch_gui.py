@@ -2,10 +2,10 @@ import enaml
 from enaml.qt.qt_application import QtApplication
 
 
-def main():
+def launch_enaml():
     with enaml.imports():
-        # noinspection PyUnresolvedReferences
-        from view import Main
+        # noinspection PyUnresolvedReferences,PyPackageRequirements
+        from enaml_gui.view import Main
     
     app = QtApplication()
     view = Main()
@@ -13,5 +13,9 @@ def main():
     app.start()
 
 
+def launch_qml():
+    pass
+
+
 if __name__ == '__main__':
-    main()
+    launch_enaml()

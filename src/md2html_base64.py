@@ -8,8 +8,7 @@ def main(ifile, ofile=''):
     """
     
     :param ifile: .md file.
-    :param ofile: Output .md file. If empty, use '{ifilename}_base64.md'
-        instead.
+    :param ofile: Output .html file. If empty, use '{ifilename}.html' instead.
     :return:
     """
     ifile = abspath(ifile).replace('\\', '/')
@@ -28,9 +27,9 @@ def main(ifile, ofile=''):
         yield next(progress)
     
     if ofile == '':
-        ofile = ifile.replace('.md', '_base64.md')
+        ofile = ifile.replace('.md', '.html')
     with open(ofile, 'w', encoding='utf-8') as f:
-        f.write(doc)
+        f.write(compose_html(doc))
 
 
 def fetch_image_links(doc: str):
@@ -55,6 +54,16 @@ def fetch_image_links(doc: str):
         img_path = regex2.match(img_link)[2].strip()
         out[img_link] = img_path
     return out
+
+
+def compose_html(doc):
+    import markdown2
+    html = markdown2.markdown(doc, extras=[
+        # https://github.com/trentm/python-markdown2/wiki/Extras
+        'code-friendly', 'cuddled-lists', 'fenced-code-blocks', 'header-ids',
+        'numbering', 'strike', 'tables', 'task-list', 'toc',
+    ])
+    return html
 
 
 if __name__ == '__main__':
