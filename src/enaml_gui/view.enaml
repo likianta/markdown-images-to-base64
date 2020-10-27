@@ -1,11 +1,8 @@
 """
 描述: 通过文件对话窗口或者拖放目标文件到工具中, 识别到该文件的路径. 点击运行按钮
     生成结果文件.
-注: 文件仅支持 html.
 """
 from os.path import exists
-
-from lk_logger import lk
 
 from enaml.layout.api import align, hbox, vbox
 from enaml.styling import *
@@ -13,61 +10,68 @@ from enaml.widgets.api import *
 
 
 enamldef Main(Window): window:
-    title = 'HTML to image base64 embedded'
+    title = 'Markdown/HTML to image base64 embedded'
 
-    attr path = ""
+    attr ifile = ""
+    attr ofile = ""
     attr tip = ""
 
     Container:
         constraints = [
             hbox(_label, _field, _browse, _run),
             vbox(_label, _tip),
-            hbox(_progress, _open, _tip),
+            hbox(_tip, _open),
             align('v_center', _label, _field, _browse, _run),
             _browse.height == _field.height,
-            _progress.height == _open.height,
         ]
         Label: _label:
-            text = 'Select html:'
+            text = 'Select md/html:'
         Field: _field:
             hug_width = 'ignore'
             hug_height = 'ignore'
-            text << window.path
+            text := window.ifile
             text ::
                 # when text changed, clear the tip
                 window.tip = ''
-                _progress.value = 0
+                window.ofile = ''
+#                _progress.value = 0
         PushButton: _browse:
             text = 'Browse'
             clicked ::
                 path = FileDialogEx.get_open_file_name(window)
                 if path:
-                    window.path = path
+                    window.ifile = path
         PushButton: _run:
             text = 'Run'
             clicked ::
-                # validate path
-                path = _field.text
-                if not exists(path):
-                    lk.loga('The file doesn\'t exist!', path)
-                    window.tip = 'The file doesn\'t exist!'
-                elif not path.endswith('.html'):
-                    lk.loga('Please input a .html file', path)
-                    window.tip = 'Please input a .html file.'
-                else:
-                    import html_base64
-                    for progress in html_base64.main(path):
-                        _progress.value = int(progress * 100)
-                    window.tip = 'Successfully generated base64 file!'
+                ifile = window.ifile
 
-        ProgressBar: _progress:
-            pass
+                if exists(ifile):  # validate path
+                    if ifile.endswith('.md'):
+                        import md2html_base64 as processor
+                    elif ifile.endswith('.html'):
+                        import html_base64 as processor
+                    else:
+                        window.tip = 'Please input a .md/.html file.'
+                        processor = None  # enaml not allowed `return` statement
+                        #   in a notification block, so i have to set processor
+                        #   to None to continue.
+
+                    if processor:
+                        window.ofile = processor.main(ifile)
+                        window.tip = 'Successfully generated base64 file!'
+
+                else:
+                    window.tip = 'The file doesn\'t exist!'
+
+#        ProgressBar: _progress:
+#            pass
         PushButton: _open:
             text = 'Open'
-            enabled << bool(_field.text.endswith('.html'))
+            enabled << bool(ofile.endswith('.html'))
             clicked ::
                 if window.tip == 'Successfully generated base64 file!':
-                    path = _field.text.replace('.html', '_base64.html')
+                    path = window.ofile
                 else:
                     path = _field.text
                 if exists(path):
@@ -101,14 +105,6 @@ enamldef Main(Window): window:
             Setter:
                 field = 'font-size'
                 value = '13px'
-#        Style:  # border
-#            element = 'PushButton, Field'
-#            Setter:
-#                field = 'border'
-#                value = '1px solid #cccccc'
-#            Setter:
-#                field = 'border-radius'
-#                value = '4px'
         Style:  # button
             element = 'PushButton'
             Setter:

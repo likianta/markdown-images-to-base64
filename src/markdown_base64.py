@@ -18,19 +18,18 @@ def main(ifile, ofile=''):
         doc = f.read()
     
     links = fetch_image_links(doc)
-    progress = (round(i / len(links), 2) for i in range(1, len(links) + 1))
     for link, path in links.items():
         b64 = convert_image_2_base64(
             convert_relpath_2_abspath(fdir, path)
         )
         new_link = link.replace(path, b64)
         doc = doc.replace(link, new_link)
-        yield next(progress)
     
     if ofile == '':
         ofile = ifile.replace('.md', '_base64.md')
     with open(ofile, 'w', encoding='utf-8') as f:
         f.write(doc)
+    return ofile
 
 
 def fetch_image_links(doc: str):

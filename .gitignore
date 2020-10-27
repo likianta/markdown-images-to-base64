@@ -1,2 +1,5 @@
-/src/__enamlcache__/
-/.idea/
+.idea/
+assets/
+src/__pycache__/
+tests/
+*/__enamlcache__/
