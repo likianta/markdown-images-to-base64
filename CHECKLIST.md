@@ -2,6 +2,7 @@
 - [x] README 添加插图
 - [x] 将 markdown 一步转换为单文件 html (不再借助 Typora 的导出为 html 功能)
 - [ ] `md2html_base64.py` 添加 CSS 样式
+- [ ] html 增加悬浮目录
 - [ ] README 添加使用演示 (动图)
 - [ ] 压缩编码 (可选参数)
 - [ ] 可视化界面 (基于 enaml)

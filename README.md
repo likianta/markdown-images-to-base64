@@ -13,10 +13,10 @@
 1. 准备一个 markdown 文件: "examples/demo.md"
 2. 用 Typora 打开它, 并导出为 html 格式到 "examples/demo.html"
 3. 运行 "src/launch_gui.py" (您可以双击此文件运行)
-4. 弹出可视化界面
+4. 弹出可视化界面<br>
    ![image-20201026153247849](.assets/image-20201026153247849.png)
 5. 输入或选择 .html 文件, 点击 "Run" 按钮
-6. 提示生成成功, 生成文件在 "examples/demo_base64.html"
+6. 提示生成成功, 生成文件在 "examples/demo_base64.html"<br>
    ![image-20201026153418122](.assets/image-20201026153418122.png)
 
 演示用例 2 (不推荐):
