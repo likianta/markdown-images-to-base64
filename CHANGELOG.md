@@ -1,6 +1,6 @@
 # Current status
 
-current version: 0.3.2
+current version: 0.3.3
 
 # Changelog
 
@@ -10,6 +10,7 @@ current version: 0.3.2
 - 新增: enaml 客户端支持输入 .md 文件
 - 移除: enaml 客户端移除进度条
 - 新增: enaml 客户端等待提示
+- 修复: `html_base64.fetch_image_links()` 提取 img tag 时无法识别单引号的情况
 
 ## v0.2 (2020-10-26)
 

@@ -58,7 +58,7 @@ def fetch_image_links(content: str):
     :return out: {img_tag: img_path}
     """
     regex1 = re.compile(r'<img [^>]+>')
-    regex2 = re.compile(r'(?<=src=")[^"]+')
+    regex2 = re.compile(r'(?<=src=")[^"]+|(?<=src=\')[^\']+')
     
     out = {}
     for img_tag in regex1.findall(content):
