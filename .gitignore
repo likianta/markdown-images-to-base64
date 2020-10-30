@@ -3,3 +3,4 @@ assets/
 src/__pycache__/
 tests/
 */__enamlcache__/
+/src/enaml_gui/__enamlcache__/
