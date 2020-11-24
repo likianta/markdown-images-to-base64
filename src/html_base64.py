@@ -21,9 +21,7 @@ def main(ifile, ofile=''):
     
     links = fetch_image_links(body)
     for link, path in links.items():
-        b64 = convert_image_2_base64(
-            convert_relpath_2_abspath(fdir, path)
-        )
+        b64 = convert_image_2_base64(convert_relpath_2_abspath(fdir, path))
         new_link = link.replace(path, b64)
         body = body.replace(link, new_link)
     

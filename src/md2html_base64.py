@@ -6,10 +6,10 @@ from common import convert_image_2_base64, convert_relpath_2_abspath
 
 def main(ifile, ofile=''):
     """
+    Args:
+        ifile: .md file.
+        ofile: Output .html file. If empty, use '{ifilename}.html' instead.
     
-    :param ifile: .md file.
-    :param ofile: Output .html file. If empty, use '{ifilename}.html' instead.
-    :return:
     """
     ifile = abspath(ifile).replace('\\', '/')
     fdir, fname = ifile.rsplit('/', 1)  # filedir, filename
@@ -18,9 +18,7 @@ def main(ifile, ofile=''):
     
     links = fetch_image_links(doc)
     for link, path in links.items():
-        b64 = convert_image_2_base64(
-            convert_relpath_2_abspath(fdir, path)
-        )
+        b64 = convert_image_2_base64(convert_relpath_2_abspath(fdir, path))
         new_link = link.replace(path, b64)
         doc = doc.replace(link, new_link)
     
@@ -31,14 +29,16 @@ def main(ifile, ofile=''):
     return ofile
 
 
-def fetch_image_links(doc: str):
+def fetch_image_links(doc: str) -> dict:
     """ Get local image links from markdown.
-    :return out: {img_link: img_path}
-        e.g. {
-            '![image-20201023121704430](.assets/image-20201023121704430.png
-            "desc")': '.assets/image-20201023121704430.png',
-            ...
-        }
+    
+    Returns:
+        out: {img_link: img_path, ...}
+            e.g. {
+                '![image-20201023121704430](.assets/image-20201023121704430.png
+                "desc")': '.assets/image-20201023121704430.png',
+                ...
+            }
     """
     regex1 = re.compile(r'!\[[^]]*]\([^)]+\)')
     #                     ^ ^-----^ ^------^
