@@ -1,7 +1,7 @@
 import re
 from os.path import abspath
 
-from common import convert_image_2_base64, convert_relpath_2_abspath
+from common import encode_img, get_img_path
 
 
 def main(ifile, ofile=''):
@@ -21,7 +21,7 @@ def main(ifile, ofile=''):
     
     links = fetch_image_links(body)
     for link, path in links.items():
-        b64 = convert_image_2_base64(convert_relpath_2_abspath(fdir, path))
+        b64 = encode_img(get_img_path(fdir, path))
         new_link = link.replace(path, b64)
         body = body.replace(link, new_link)
     

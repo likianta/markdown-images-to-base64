@@ -1,21 +1,32 @@
 import base64
-from os.path import splitext
-from pathlib import Path
+from os.path import splitext, abspath
 
 
-def convert_relpath_2_abspath(base: Path, path: str) -> str:
-    """
+def get_img_path(base: str, link: str) -> str:
+    """ Get the full path from the markdown image link.
     Args:
-        base: Path to html's folder
-        path: Path from `md2html_base64.fetch_image_links`
+        base: Path of html's folder
+        link: Path from `md2html_base64.fetch_image_links`
+    
+    Returns: [str abspath | str empty]
+        empty: It means the `link` is a weblink, not a local file path.
     """
-    if path.startswith('http'):
-        return path
+    if link.startswith('http'):
+        return ''
     else:
-        return str(base.joinpath(path).resolve())
+        ''' os.path's trick
+        Examples:
+            base = 'a/b/c'
+            link = '../d'
+                -> os.path.abspath(f'{base}/{link}')
+                    -> 'a/b/c/../d'
+                        -> 'a/b/d'
+            PS: 'a/b/c/' + '/' + '../d' has the same result.
+        '''
+        return abspath(f'{base}/{link}')
 
 
-def convert_image_2_base64(path: str) -> str:
+def encode_img(file: str) -> str:
     """
     References:
         https://blog.csdn.net/u013055678/article/details/71406746
@@ -25,13 +36,13 @@ def convert_image_2_base64(path: str) -> str:
         markdown 编辑器和浏览器才能正常显示.
     
     Args:
-        path: Image (absolute) path.
+        file: Image (absolute) path.
     
     Returns:
         Base64 encoded string of image.
     """
-    with open(path, 'rb') as f:
+    with open(file, 'rb') as f:
         data = base64.b64encode(f.read())
-    ext = splitext(path)[1][1:]  # e.g. '.gif' -> 'gif'
-    data = data.decode('utf-8')
+    ext = splitext(file)[1][1:]  # e.g. '.gif' -> 'gif'
+    data = data.decode('utf-8')  # convert bytes to str
     return 'data:image/{};base64, {}'.format(ext, data)
