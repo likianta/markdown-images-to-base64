@@ -71,7 +71,7 @@ def compose_html(
         title: str, md: str,
         css=relpath('../assets/github-markdown.css'),
         syntax_highlight=relpath(
-            '../assets/pygment-syntax-highlight-default.css')
+            '../assets/syntax_highlight/richleland-pygments-css/default.css')
 ):
     """ Convert markdown to pure html, then rendered by github-markdown-css.
     
@@ -84,8 +84,8 @@ def compose_html(
             theoretically, any class-less markdown stylesheets can also be
             available (thus Typora themes not meet the requirements.)
         syntax_highlight: You can download syntax highlight css from
-            https://github.com/richleland/pygments-css, and put it in 'assets'
-            folder.
+            http://richleland.github.io/pygments-css/, and put it in 'assets/
+            syntax_highlight' folder.
         
     References:
         https://github.com/trentm/python-markdown2
