@@ -1,6 +1,5 @@
-.idea/
-assets/
-src/__pycache__/
-tests/
 */__enamlcache__/
+/.idea/
+/src/__pycache__/
 /src/enaml_gui/__enamlcache__/
+/tests/
