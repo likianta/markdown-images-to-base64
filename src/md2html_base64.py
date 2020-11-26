@@ -1,6 +1,7 @@
 import re
 from os.path import abspath, split, splitext
 
+from lk_utils.filesniff import relpath
 from lk_utils.read_and_write import read_file
 
 from common import encode_img, get_img_path
@@ -16,18 +17,18 @@ def main(ifile: str, ofile=''):
     fdir, fname = split(ifile)  # fdir, fname: filedir, filename
     
     with open(ifile, 'r', encoding='utf-8') as f:
-        doc = f.read()
+        markdown = f.read()
     
-    for pattern, link in fetch_image_links(doc).items():
+    for pattern, link in fetch_image_links(markdown).items():
         if img_path := get_img_path(fdir, link):
             b64 = encode_img(img_path)
             new_pattern = pattern.replace(link, b64)
-            doc = doc.replace(pattern, new_pattern, 1)
+            markdown = markdown.replace(pattern, new_pattern, 1)
             ''' Note: 该方法不够稳定, 存在以下风险:
                 如果 markdown 正文中出现
                     "The image format in markdown is `![alt](img_link title)`."
-                这样的讲解性文字, 也会被误认为是一个图片链接, 导致被替换成 base64 (假如这个
-                图片存在的话).
+                这样的讲解性文字, 也会被误认为是一个图片链接, 导致被替换成
+                base64.
             '''
     
     if ofile == '':
@@ -36,7 +37,7 @@ def main(ifile: str, ofile=''):
         f.write(
             compose_html(
                 title=splitext(fname)[0],
-                doc=doc,
+                md=markdown,
             )
         )
     print('See output at "{}:0"'.format(ofile))
@@ -66,41 +67,36 @@ def fetch_image_links(doc: str) -> dict:
     return out
 
 
-def compose_html(title, doc):
+def compose_html(
+        title: str, md: str,
+        css=relpath('../assets/github-markdown.css'),
+        syntax_highlight=relpath(
+            '../assets/pygment-syntax-highlight-default.css')
+):
+    """ Convert markdown to pure html, then rendered by github-markdown-css.
+    
+    Args:
+        title: Suggest passing filename (without suffix) or the first line of
+            `md` as title.
+        md: The markdown text.
+        css: For now (2020-11-26) we only support Github flavored markdown theme
+            (see https://github.com/sindresorhus/github-markdown-css), in
+            theoretically, any class-less markdown stylesheets can also be
+            available (thus Typora themes not meet the requirements.)
+        syntax_highlight: You can download syntax highlight css from
+            https://github.com/richleland/pygments-css, and put it in 'assets'
+            folder.
+        
+    References:
+        https://github.com/trentm/python-markdown2
+        https://github.com/sindresorhus/github-markdown-css
+    """
     import markdown2
-    html = markdown2.markdown(doc, extras={
-        # https://github.com/trentm/python-markdown2/wiki/Extras
-        'code-friendly'     : None, 'cuddled-lists': None,
-        'fenced-code-blocks': None, 'header-ids': None, 'numbering': None,
-        'strike'            : None, 'tables': None, 'task_list': None, 'toc': None,
-        'html-classes'      : {
-            # Refer to typora exported html tags
-            # Note: 经测试发现, <ul>, <li>, <input> 标签设置 class 无效. 后面我会单独对
-            #       它们做修正.
-            'a': 'md-header-anchor',
-        }
-    })
-    html = html.replace(
-        '<li><input type="checkbox" class="task-list-item-checkbox" checked '
-        'disabled>',
-        '<li class="md-task-list-item task-list-item task-list-done"><input '
-        'type="checkbox"/>'
-    ).replace(
-        '<li><input type="checkbox" class="task-list-item-checkbox" disabled>',
-        '<li class="md-task-list-item task-list-item task-list-not-done">'
-        '<input type="checkbox"/>'
-    )
+    import textwrap
+    #   https://google.github.io/styleguide/pyguide.html#310-strings
     
-    # return html  # TEST Return
-    
-    # --------------------------------------------------------------------------
-    
-    # For now the html has no stylesheet applied.
-    # We adjust it more compatible to Typora html format (like adding header and
-    # footer, etc.), and apply a Typora theme onto it.
-    
-    import textwrap  # https://google.github.io/styleguide/pyguide.html#310-strings
-    outframe = textwrap.dedent('''\
+    # 1/3: Templates
+    html = textwrap.dedent('''\
         <!doctype html>
         <html>
             {__head__}
@@ -116,25 +112,63 @@ def compose_html(title, doc):
         </head>
     ''')
     title = f'<title>{title}</title>'
-    style = f'<style type="text/css">' \
-            f'{read_file("../assets/github-typora.css")}</style>'
+    style = textwrap.dedent('''\
+        <style>
+            /* GitHub theme uses 980px width and 45px padding, and 15px padding
+               for mobile. */
+               
+            .markdown-body {{
+                box-sizing: border-box;
+                min-width: 200px;
+                max-width: 980px;
+                margin: 0 auto;
+                padding: 45px;
+            }}
+            
+            @media (max-width: 767px) {{
+                .markdown-body {{
+                    padding: 15px;
+                }}
+            }}
+            
+            {__main_style__}
+            {__syntax_highlight__}
+        </style>
+    ''')
     body = textwrap.dedent('''\
-        <body class='typora-export'>
-            <div id='write' class=''>
+        <body>
+            <div id='write' class='markdown-body'>
                 {__content__}
             </div>
         </body>
     ''')
-    content = html
+    content = markdown2.markdown(md, extras=[
+        # https://github.com/trentm/python-markdown2/wiki/Extras
+        'code-friendly',
+        'cuddled-lists',
+        'fenced-code-blocks',
+        'header-ids',
+        'numbering',
+        'strike',
+        'tables',
+        'task_list',
+        'toc',
+    ])
+    content = re.sub(  # Remove 'disabled' from checkbox elements.
+        r'<(input type="checkbox" class="task-list-item-checkbox"(?: checked)?)'
+        r' disabled>', r'<\1>', content
+    )
     
+    # 2/3: Interpolates
     body = body.format(__content__=content)
+    style = style.format(__main_style__=read_file(css),
+                         __syntax_highlight__=read_file(syntax_highlight))
     head = head.format(__title__=title, __style__=style)
-    outframe = outframe.format(__head__=head, __body__=body)
+    html = html.format(__head__=head, __body__=body)
     
-    return outframe
+    # 3/3: Return full html
+    return html
 
 
 if __name__ == '__main__':
-    # main('../examples/demo.md', '../examples/demo_base64.md')
-    main('/Users/Likianta/Desktop/documents/notebook/清单/博客文章.md',
-         '/Users/Likianta/Desktop/temp/test_content.html')
+    main('../examples/demo.md', '../examples/demo_base64.html')

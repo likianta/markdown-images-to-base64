@@ -1,5 +1,6 @@
-pyside2
-qtpy
 enaml
 lk-logger
+lk-utils
 markdown2
+pyside2
+qtpy
