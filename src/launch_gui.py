@@ -16,6 +16,18 @@ def launch_qml():
     pass
 
 
+def debug():
+    from qml_gui import control
+    control.main()
+    
+    # noinspection PyPackageRequirements
+    from debugger import HotReloader
+    reloader = HotReloader('./qml_gui/Main.qml')
+    reloader.launch()
+
+
 if __name__ == '__main__':
-    from lk_utils.easy_launcher import launch
-    launch(launch_enaml)
+    # from lk_utils.easy_launcher import launch
+    # launch(launch_enaml)
+    
+    debug()
