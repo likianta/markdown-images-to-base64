@@ -87,11 +87,17 @@ class MyHandler:
         if SYSTEM == 0:
             os.startfile(ofile)
         else:
+            # A (not work for me)
+            # https://blog.csdn.net/bmw601055/article/details/77619271
+            # import subprocess
+            # subprocess.call(['open', ofile])
+            # B (not work for me)
             # https://www.runoob.com/python/os-open.html
-            #   https://blog.csdn.net/bmw601055/article/details/77619271
-            #   import subprocess
-            #   subprocess.call(['open', ofile])
-            os.open('/' + ofile, os.O_RDONLY)
+            # os.open('/' + ofile, os.O_RDONLY)
+            # C (worked)
+            # https://apple.stackexchange.com/questions/321043/open-html-file
+            # -with-google-chrome-using-command-line
+            os.popen('open ' + '/' + ofile)
     
     @_file_binding(io='ifile')
     def run(self, ifile):
