@@ -3,6 +3,7 @@ import LightClean 1.0
 import LightClean.LCButtons 1.0
 
 LCWindow {
+    width: 500; height: 100
     p_color: '#f2f2f2'
 
     property alias  p_ifile: _row1.p_path
@@ -18,7 +19,9 @@ LCWindow {
             top: parent.top
             topMargin: 10
         }
-        height: 30
+        clip: true
+        width: 300; height: 30
+        p_borderless: false
         p_dialogTitle: 'Select a .md or .html (from Typora exported) file'
         p_filetype: ['Markdown file (*.md)', 'HTML file (*.html)']
         p_hint: 'Put .md or .html file here'
@@ -38,13 +41,18 @@ LCWindow {
         height: 30
 
         LCButton {
+            p_borderless: false
             p_text: 'Run'
             onClicked: PyHandler.call('run', p_ifile)
+            // onClicked: {  // TEST
+            //     _openBtn.enabled = true
+            // }
         }
 
         LCButton {
             id: _openBtn
-            enabled: PyHandler.call('target_file_exists', p_ifile)  // bool
+            enabled: PyHandler.call('target_file_exists', p_ofile)  // bool
+            p_borderless: false
             p_text: 'Open'
 
             onClicked: PyHandler.call('open_target', p_ofile)
@@ -53,7 +61,8 @@ LCWindow {
                 State {
                     when: !_openBtn.enabled
                     PropertyChanges {
-                        contentItem.p_color: '#cccccc'
+                        target: _openBtn
+                        p_color: '#cccccc'
                     }
                 }
             ]
