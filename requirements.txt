@@ -1,6 +1,5 @@
-enaml
 lk-logger
+lk-qtquick-scaffold
 lk-utils
 markdown2
 pyside2
-qtpy
