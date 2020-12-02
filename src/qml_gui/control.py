@@ -1,7 +1,8 @@
 import os
-from os.path import exists
 from functools import wraps
+from os.path import exists, isfile
 
+from lk_logger import lk
 from lk_qtquick_scaffold import pyhandler
 
 
@@ -29,9 +30,13 @@ def _file_binding(io: str):
             func: class methods of MyHandler, see decorator usages at
                 `MyHandler.calc_target` and `MyHandler.open_target`.
         """
-
+        
         @wraps(func)
         def decor1(self, file):
+            from env import SYSTEM
+            if SYSTEM == 1:  # macOS
+                if file != '' and file[0] != '/':
+                    file = '/' + file  # e.g. 'Users/A/B/C' -> '/Users/A/B/C'
             if io == 'ifile':
                 self.ifile = file
             else:
@@ -75,10 +80,8 @@ class MyHandler:
                 换句话说, 前者要求我们去掉 'file:///', 后者要求我们去掉 'file://', 该怎么
                 统一操作呢?
         """
-        from env import SYSTEM
-        if SYSTEM == 1:
-            ofile = '/' + ofile  # e.g. 'Users/A/B/C' -> '/Users/A/B/C'
-        return exists(ofile)
+        lk.loga(ofile)
+        return exists(ofile) and isfile(ofile)
     
     @_file_binding(io='ofile')
     def open_target(self, ofile):
@@ -91,14 +94,18 @@ class MyHandler:
             # https://blog.csdn.net/bmw601055/article/details/77619271
             # import subprocess
             # subprocess.call(['open', ofile])
+            
             # B (not work for me)
             # https://www.runoob.com/python/os-open.html
             # os.open('/' + ofile, os.O_RDONLY)
+            
             # C (worked)
             # https://apple.stackexchange.com/questions/321043/open-html-file
             # -with-google-chrome-using-command-line
-            os.popen('open ' + '/' + ofile)
+            os.popen(f'open "{ofile}"')
     
     @_file_binding(io='ifile')
     def run(self, ifile):
-        print('src/qml_gui/control.py:57', 'This method is not ready...', ifile)
+        import md2html_base64
+        ofile = md2html_base64.main(ifile)
+        return ofile

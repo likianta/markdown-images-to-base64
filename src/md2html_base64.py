@@ -41,6 +41,7 @@ def main(ifile: str, ofile=''):
             )
         )
     print('See output at "{}:0"'.format(ofile))
+    return ofile
 
 
 def fetch_image_links(doc: str) -> dict:

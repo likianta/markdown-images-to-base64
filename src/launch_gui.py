@@ -21,8 +21,8 @@ def debug():
     control.main()
     
     # noinspection PyPackageRequirements
-    from debugger import HotReloader
-    reloader = HotReloader('./qml_gui/Main.qml')
+    from lk_qtquick_scaffold.debugger import HotReloader
+    reloader = HotReloader('./qml_gui/view.qml')
     reloader.launch()
 
 
