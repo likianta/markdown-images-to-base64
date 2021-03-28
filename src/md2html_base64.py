@@ -4,7 +4,7 @@ from os.path import abspath, split, splitext
 from lk_utils.filesniff import relpath
 from lk_utils.read_and_write import read_file
 
-from common import encode_img, get_img_path
+from src.common import encode_img, get_img_path
 
 
 def main(ifile: str, ofile=''):
@@ -70,9 +70,9 @@ def fetch_image_links(doc: str) -> dict:
 
 def compose_html(
         title: str, md: str,
-        css=relpath('../assets/github-markdown.css'),
+        css=relpath('../styles/github-markdown.css'),
         syntax_highlight=relpath(
-            '../assets/syntax_highlight/richleland-pygments-css/default.css')
+            '../styles/syntax_highlight/richleland-pygments-css/default.css')
 ):
     """ Convert markdown to pure html, then rendered by github-markdown-css.
     

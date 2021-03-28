@@ -1,5 +1,5 @@
 def launch_enaml():
-    import enaml
+    import enaml  # pip install enaml
     from enaml.qt.qt_application import QtApplication
     
     with enaml.imports():

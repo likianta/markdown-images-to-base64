@@ -1,7 +1,7 @@
 import re
 from os.path import abspath
 
-from common import encode_img, get_img_path
+from src.common import encode_img, get_img_path
 
 
 def main(ifile, ofile=''):
