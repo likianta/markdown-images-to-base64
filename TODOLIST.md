@@ -2,6 +2,10 @@
 - [x] README 添加插图
 - [x] 将 markdown 一步转换为单文件 html (不再借助 Typora 的导出为 html 功能)
 - [x] `md2html_base64.py` 添加 CSS 样式
+- [ ] 将默认输出的文件名由 '~_base64.md' 改为 '~.base64.md'
+- [ ] 增加一个缺省参数, 允许用户指定图片的相对路径是基于哪个目录开始计算
+- [ ] `md2md_base64.py` 增加一种替换格式: `<img src="{b64}">`
+    - [ ] 提供一项发布到 CSDN 的建议
 - [ ] README 添加使用演示 (动图)
 - [ ] html 增加悬浮目录
 - [ ] 修复 TOC 不显示的问题

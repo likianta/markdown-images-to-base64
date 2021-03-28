@@ -42,7 +42,7 @@ def extract_html_body(html: str):
     except ValueError:
         a = html.index('<body ')
     b = html.index('</body>') + 7
-    return (html[:a], html[a:b], html[b:])
+    return html[:a], html[a:b], html[b:]
 
 
 def fetch_image_links(content: str):
