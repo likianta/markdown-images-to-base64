@@ -106,6 +106,6 @@ class MyHandler:
     
     @_file_binding(io='ifile')
     def run(self, ifile):
-        import md2html_base64
-        ofile = md2html_base64.main(ifile)
+        from converter import md_2_html
+        ofile = md_2_html.main(ifile)
         return ofile

@@ -1,35 +1,28 @@
 import re
-from os.path import abspath
 
 from src.common import encode_img, get_img_path
 
 
-def main(ifile, ofile=''):
+def main(file_i, file_o):
     """
-    
-    :param ifile: .html file.
-    :param ofile: Output .html file. If empty, use '{ifilename}_base64.html'
-        instead.
-    :return:
+    Args:
+        file_i: .html file.
+        file_o: Output .html file
     """
-    ifile = abspath(ifile).replace('\\', '/')
-    fdir, fname = ifile.rsplit('/', 1)  # filedir, filename
-    with open(ifile, 'r', encoding='utf-8') as f:
+    fdir, fname = file_i.rsplit('/', 1)  # filedir, filename
+    with open(file_i, 'r', encoding='utf-8') as f:
         html = f.read()
     
     before_body, body, after_body = extract_html_body(html)
     
-    links = fetch_image_links(body)
-    for link, path in links.items():
+    for link, path in fetch_image_links(body):
         b64 = encode_img(get_img_path(fdir, path))
         new_link = link.replace(path, b64)
         body = body.replace(link, new_link)
     
-    if ofile == '':
-        ofile = ifile.replace('.html', '_base64.html')
-    with open(ofile, 'w', encoding='utf-8') as f:
+    with open(file_o, 'w', encoding='utf-8') as f:
         f.write(before_body + body + after_body)
-    return ofile
+    return file_o
 
 
 def extract_html_body(html: str):
@@ -57,12 +50,9 @@ def fetch_image_links(content: str):
     """
     regex1 = re.compile(r'<img [^>]+>')
     regex2 = re.compile(r'(?<=src=")[^"]+|(?<=src=\')[^\']+')
-    
-    out = {}
     for img_tag in regex1.findall(content):
         img_path = regex2.findall(img_tag)[0]
-        out[img_tag] = img_path
-    return out
+        yield img_tag, img_path
 
 
 if __name__ == '__main__':

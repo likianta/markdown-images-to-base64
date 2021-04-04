@@ -1,5 +1,5 @@
 import re
-from os.path import abspath, split, splitext
+from os.path import split, splitext
 
 from lk_utils.filesniff import relpath
 from lk_utils.read_and_write import read_file
@@ -7,23 +7,22 @@ from lk_utils.read_and_write import read_file
 from src.common import encode_img, get_img_path
 
 
-def main(ifile: str, ofile=''):
+def main(file_i: str, file_o):
     """
     Args:
-        ifile: Input .md file.
-        ofile: Output .html file. If empty, use '{ifilename}.html' instead.
+        file_i: *.md. use abspath
+        file_o: *.html
     """
-    ifile = abspath(ifile)
-    fdir, fname = split(ifile)  # fdir, fname: filedir, filename
+    filedir, filename = split(file_i)
     
-    with open(ifile, 'r', encoding='utf-8') as f:
-        markdown = f.read()
+    with open(file_i, 'r', encoding='utf-8') as f:
+        content = f.read()
     
-    for pattern, link in fetch_image_links(markdown).items():
-        if img_path := get_img_path(fdir, link):
+    for pattern, link in fetch_image_links(content):
+        if img_path := get_img_path(filedir, link):
             b64 = encode_img(img_path)
             new_pattern = pattern.replace(link, b64)
-            markdown = markdown.replace(pattern, new_pattern, 1)
+            content = content.replace(pattern, new_pattern, 1)
             ''' Note: 该方法不够稳定, 存在以下风险:
                 如果 markdown 正文中出现
                     "The image format in markdown is `![alt](img_link title)`."
@@ -31,20 +30,18 @@ def main(ifile: str, ofile=''):
                 base64.
             '''
     
-    if ofile == '':
-        ofile = splitext(ifile)[0] + '.html'
-    with open(ofile, 'w', encoding='utf-8') as f:
+    with open(file_o, 'w', encoding='utf-8') as f:
         f.write(
             compose_html(
-                title=splitext(fname)[0],
-                md=markdown,
+                title=splitext(filename)[0],
+                md=content,
             )
         )
-    print('See output at "{}:0"'.format(ofile))
-    return ofile
+    print('See output at "{}:0"'.format(file_o))
+    return file_o
 
 
-def fetch_image_links(doc: str) -> dict:
+def fetch_image_links(content: str) -> dict:
     """ Get local image links from markdown.
     
     Returns:
@@ -60,19 +57,16 @@ def fetch_image_links(doc: str) -> dict:
     regex2 = re.compile(r'(!\[[^]]*]\()([^"\')]+)')
     #                     |  ^-----^  |^--------^
     #                     ^-----------^
-    
-    out = {}
-    for pattern in regex1.findall(doc):
+    for pattern in regex1.findall(content):
         link = regex2.match(pattern)[2].strip()
-        out[pattern] = link
-    return out
+        yield pattern, link
 
 
 def compose_html(
         title: str, md: str,
-        css=relpath('../styles/github-markdown.css'),
+        css=relpath('../../styles/github-markdown.css'),
         syntax_highlight=relpath(
-            '../styles/syntax_highlight/richleland-pygments-css/default.css')
+            '../../styles/syntax_highlight/richleland-pygments-css/default.css')
 ):
     """ Convert markdown to pure html, then rendered by github-markdown-css.
     
