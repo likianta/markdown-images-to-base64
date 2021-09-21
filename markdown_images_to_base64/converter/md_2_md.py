@@ -1,9 +1,12 @@
 import re
 
-from src.common import encode_img, get_img_path
+from .common import encode_img
+from .common import get_img_path
+from .common import refmt_io
 
 
-def main(file_i, file_o, target_format='markdown_image_link'):
+@refmt_io
+def md_2_md(file_i, file_o='', target_format='markdown_image_link'):
     """
     
     Args:
@@ -53,7 +56,3 @@ def fetch_image_links(content: str):
     for img_link in regex1.findall(content):
         img_path = regex2.match(img_link)[2].strip()
         yield img_link, img_path
-
-
-if __name__ == '__main__':
-    main('../../examples/demo.md', '../examples/demo_base64.md')

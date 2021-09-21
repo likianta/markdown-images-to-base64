@@ -1,9 +1,12 @@
 import re
 
-from src.common import encode_img, get_img_path
+from .common import encode_img
+from .common import get_img_path
+from .common import refmt_io
 
 
-def main(file_i, file_o):
+@refmt_io
+def html_2_html(file_i, file_o=''):
     """
     Args:
         file_i: .html file.
@@ -53,7 +56,3 @@ def fetch_image_links(content: str):
     for img_tag in regex1.findall(content):
         img_path = regex2.findall(img_tag)[0]
         yield img_tag, img_path
-
-
-if __name__ == '__main__':
-    main('../examples/demo.html', '../examples/demo_base64.html')

@@ -1,13 +1,17 @@
 import re
-from os.path import split, splitext
+from os.path import split
+from os.path import splitext
 
 from lk_utils.filesniff import relpath
 from lk_utils.read_and_write import read_file
 
-from src.common import encode_img, get_img_path
+from .common import encode_img
+from .common import get_img_path
+from .common import refmt_io
 
 
-def main(file_i: str, file_o):
+@refmt_io
+def md_2_html(file_i: str, file_o=''):
     """
     Args:
         file_i: *.md. use abspath
@@ -163,7 +167,3 @@ def compose_html(
     
     # 3/3: Return full html
     return html
-
-
-if __name__ == '__main__':
-    main('../examples/demo.md', '../examples/demo_base64.html')

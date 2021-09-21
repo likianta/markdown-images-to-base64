@@ -1,5 +1,30 @@
 import base64
-from os.path import splitext, abspath
+import os
+import re
+
+from lk_logger import lk
+
+
+def refmt_io(func):  # a decorator
+    assert re.match(r'(?:md|html)_2_(?:md|html)', func.__name__), (
+        'the function name is not support to extract its conversion type. '
+        'you need to provide function names like "md_2_md", "md_2_html", etc.'
+    )
+    
+    def _refmt_io(file_i, file_o, *args, **kwargs):
+        assert os.path.exists(file_i)
+        if not file_o:
+            file_o = '{}/{}.base64.{}'.format(
+                os.path.dirname(file_i),
+                os.path.basename(file_i),
+                func.__name__.rsplit('_')[-1]
+            )
+        lk.logp(file_i, file_o)
+        if os.path.exists(file_o):
+            lk.loga('the target file already exists, it will be overriden')
+        return func(file_i, file_o, *args, **kwargs)
+    
+    return _refmt_io
 
 
 def get_img_path(base: str, link: str) -> str:
@@ -23,7 +48,7 @@ def get_img_path(base: str, link: str) -> str:
                         -> 'a/b/d'
             PS: 'a/b/c/' + '/' + '../d' has the same result.
         '''
-        return abspath(f'{base}/{link}')
+        return os.path.abspath(f'{base}/{link}')
 
 
 def encode_img(file: str) -> str:
@@ -43,6 +68,6 @@ def encode_img(file: str) -> str:
     """
     with open(file, 'rb') as f:
         data = base64.b64encode(f.read())
-    ext = splitext(file)[1][1:]  # e.g. '.gif' -> 'gif'
+    ext = os.path.splitext(file)[1][1:]  # e.g. '.gif' -> 'gif'
     data = data.decode('utf-8')  # convert bytes to str
     return 'data:image/{};base64, {}'.format(ext, data)
