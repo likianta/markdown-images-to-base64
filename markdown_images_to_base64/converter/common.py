@@ -1,23 +1,21 @@
 import base64
 import os
-import re
 
 from lk_logger import lk
 
 
 def refmt_io(func):  # a decorator
-    assert re.match(r'(?:md|html)_2_(?:md|html)', func.__name__), (
+    assert func.__name__ in ('md_2_html', 'md_2_md', 'html_2_html'), (
         'the function name is not support to extract its conversion type. '
         'you need to provide function names like "md_2_md", "md_2_html", etc.'
     )
     
     def _refmt_io(file_i, file_o, *args, **kwargs):
-        assert os.path.exists(file_i)
+        ext_i, ext_o = func.__name__.split('_2_')
+        assert os.path.exists(file_i) and file_i.endswith(ext_i)
         if not file_o:
             file_o = '{}/{}.base64.{}'.format(
-                os.path.dirname(file_i),
-                os.path.basename(file_i),
-                func.__name__.rsplit('_')[-1]
+                os.path.dirname(file_i), os.path.basename(file_i), ext_o
             )
         lk.logp(file_i, file_o)
         if os.path.exists(file_o):
