@@ -1,12 +1,16 @@
 import os
 from functools import wraps
-from os.path import exists, isfile
+from os.path import exists
+from os.path import isfile
 
 from lk_logger import lk
-from lk_qtquick_scaffold import pyhandler
 
 
 def main():
+    try:
+        from lk_qtquick_scaffold import pyhandler
+    except ImportError as e:
+        raise e  # pip install lk-qtquick-scaffold
     my_handle = MyHandler()
     pyhandler.register_pyfunc(my_handle.calc_target)
     pyhandler.register_pyfunc(my_handle.target_file_exists)
@@ -33,7 +37,7 @@ def _file_binding(io: str):
         
         @wraps(func)
         def decor1(self, file):
-            from env import SYSTEM
+            from ..env import SYSTEM
             if SYSTEM == 1:  # macOS
                 if file != '' and file[0] != '/':
                     file = '/' + file  # e.g. 'Users/A/B/C' -> '/Users/A/B/C'
@@ -85,7 +89,7 @@ class MyHandler:
     
     @_file_binding(io='ofile')
     def open_target(self, ofile):
-        from env import SYSTEM
+        from ..env import SYSTEM
         
         if SYSTEM == 0:
             os.startfile(ofile)
@@ -106,6 +110,6 @@ class MyHandler:
     
     @_file_binding(io='ifile')
     def run(self, ifile):
-        from converter import md_2_html
+        from ..converter import md_2_html
         ofile = md_2_html.main(ifile)
         return ofile

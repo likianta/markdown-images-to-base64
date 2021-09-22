@@ -7,7 +7,8 @@ from lk_logger import lk
 def refmt_io(func):  # a decorator
     assert func.__name__ in ('md_2_html', 'md_2_md', 'html_2_html'), (
         'the function name is not support to extract its conversion type. '
-        'you need to provide function names like "md_2_md", "md_2_html", etc.'
+        'you need to provide function names like "md_2_md", "md_2_html", etc.',
+        func.__name__
     )
     
     def _refmt_io(file_i, file_o, *args, **kwargs):
