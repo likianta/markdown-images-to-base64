@@ -11,12 +11,14 @@ def refmt_io(func):  # a decorator
         func.__name__
     )
     
-    def _refmt_io(file_i, file_o, *args, **kwargs):
+    def _refmt_io(file_i, file_o='', *args, **kwargs):
         ext_i, ext_o = func.__name__.split('_2_')
         assert os.path.exists(file_i) and file_i.endswith(ext_i)
         if not file_o:
             file_o = '{}/{}.base64.{}'.format(
-                os.path.dirname(file_i), os.path.basename(file_i), ext_o
+                os.path.dirname(file_i),
+                os.path.splitext(os.path.basename(file_i))[0],
+                ext_o
             )
         lk.logp(file_i, file_o)
         if os.path.exists(file_o):
