@@ -1,8 +1,8 @@
 import re
+from os.path import abspath
 from os.path import split
 from os.path import splitext
 
-from lk_utils.filesniff import relpath
 from lk_utils.read_and_write import read_file
 
 from .common import encode_img
@@ -66,11 +66,14 @@ def fetch_image_links(content: str) -> dict:
         yield pattern, link
 
 
+_STYLES_DIR = abspath(f'{__file__}/../../../styles')
+
+
 def compose_html(
         title: str, md: str,
-        css=relpath('../../styles/github-markdown.css'),
-        syntax_highlight=relpath(
-            '../../styles/syntax_highlight/richleland-pygments-css/default.css')
+        css=f'{_STYLES_DIR}/github-markdown.css',
+        syntax_highlight=f'{_STYLES_DIR}/syntax_highlight/richleland-pygments'
+                         f'-css/default.css'
 ):
     """ Convert markdown to pure html, then rendered by github-markdown-css.
     

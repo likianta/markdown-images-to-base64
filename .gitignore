@@ -1,4 +1,6 @@
 /.idea/
+/dist/markdown_images_to_base64_*
 /tests/
+/README.base64.html
 __enamlcache__
 __pycache__
