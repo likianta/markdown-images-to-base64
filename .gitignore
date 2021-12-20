@@ -1,5 +1,5 @@
 /.idea/
-/dist/markdown_images_to_base64_*
+/dist/*
 /tests/
 /README.base64.html
 __enamlcache__

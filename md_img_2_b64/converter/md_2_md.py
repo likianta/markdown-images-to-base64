@@ -6,7 +6,7 @@ from .common import refmt_io
 
 
 @refmt_io
-def md_2_md(file_i, file_o='', target_format='markdown_image_link'):
+def md_2_md(file_i, file_o='', target_format='html_img_tag'):
     """
     
     Args:

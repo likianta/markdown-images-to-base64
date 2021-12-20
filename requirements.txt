@@ -1,8 +1,4 @@
+fire
 lk-logger
 lk-utils
 markdown2
-
-# === optional: gui based libraries ===
-# enaml
-# lk-qtquick-scaffold
-# pyside2

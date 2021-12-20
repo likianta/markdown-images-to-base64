@@ -1,48 +1,40 @@
 {
-    "app_name": "Markdown Images To Base64 Embedded",
-    "app_version": "0.1.9",
-    "description": "Convert markdown to one single html file with images embedded.",
-    "authors": [
-        "Likianta <likianta@foxmail.com>"
-    ],
+    "app_name": "Markdown Images To Base64",
+    "app_version": "0.3.5",
+    "description": "Embed images into markdown file with base64 image format. Share your article with the single file.",
+    "authors": ["Likianta <likianta@foxmail.com>"],
     "build": {
-        "proj_dir": "./md_img_2_b64",
-        "dist_dir": "./dist/{app_name_lower}_{app_version}",
-        "launcher_name": "MD Img 2 B64",
-        "icon": "./dist/markdown_fill.ico",
-        "target": [
-            {
-                "file": "launch.py",
+        "proj_dir": "../md_img_2_b64",
+        "dist_dir": "../dist/{app_name_kebab}-{app_version}",
+        "launchers": {
+            "MD Img 2 B64": {
+                "file": "../run.py",
+                "icon": "markdown_fill.ico",
                 "function": "mainloop",
                 "args": [],
                 "kwargs": {}
             }
-        ],
-        "readme": "",
+        },
+        "readme": "../README.md",
         "attachments": {
-            "launch.py": "asset,compile",
-            "examples": "assets,dist:examples",
-            "styles": "assets",
-            ".assets": "assets,dist:{name}",
-            "README.md": "asset,dist:{name}"
+          "../run.py": "asset,compile",
+          "../styles": "assets",
+          "../.assets": "assets",
+          "../requirements.txt": "asset,dist:{name}"
         },
         "attachments_exclusions": [],
-        "attachments_exist_scheme": "skip",
+        "attachments_exist_scheme": "override",
         "module_paths": [],
         "module_paths_scheme": "translate",
+        "python_version": "3.10",
         "venv": {
-            "enable_venv": true,
-            "python_version": "3.9",
-            "mode": "depsland",
+            "enable_venv": false,
+            "mode": "source_venv",
             "options": {
                 "depsland": {
                     "venv_name": "{app_name_lower}_venv",
                     "venv_id": "",
-                    "requirements": [
-                        "lk-logger",
-                        "lk-utils",
-                        "markdown2"
-                    ],
+                    "requirements": [],
                     "offline": false,
                     "local": ""
                 },
@@ -66,7 +58,7 @@
             "options": {
                 "cythonize": {
                     "c_compiler": "msvc",
-                    "python_path": "_auto_detect"
+                    "python_path": "auto_detect"
                 },
                 "pyarmor": {
                     "liscense": "trial",
@@ -76,13 +68,7 @@
                     "optimize_level": 0
                 },
                 "pyportable_crypto": {
-                    "key": "_trial",
-                    "c_compiler": "msvc",
-                    "python_path": "_auto_detect",
-                    "note": [
-                        "if key is '_trial', it doesn't need to define 'c_compiler' and 'python_path'.",
-                        "trial mode is only for development and test purpose."
-                    ]
+                    "key": "{random}"
                 },
                 "zipapp": {
                     "password": ""
@@ -90,10 +76,11 @@
             }
         },
         "experimental_features": {
-            "add_pywin32_support": false
+            "add_pywin32_support": false,
+            "platform": "system_default"
         },
         "enable_console": true
     },
     "note": "",
-    "pyportable_installer_version": "4.0.0b5"
+    "pyportable_installer_version": "4.2.0"
 }
