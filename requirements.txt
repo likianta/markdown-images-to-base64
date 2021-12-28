@@ -2,3 +2,4 @@ fire
 lk-logger
 lk-utils
 markdown2
+pysimplegui

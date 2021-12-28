@@ -40,16 +40,11 @@ def get_img_path(base: str, link: str) -> str:
     if link.startswith('http'):
         return ''
     else:
-        ''' os.path's trick
-        Examples:
-            base = 'a/b/c'
-            link = '../d'
-                -> os.path.abspath(f'{base}/{link}')
-                    -> 'a/b/c/../d'
-                        -> 'a/b/d'
-            PS: 'a/b/c/' + '/' + '../d' has the same result.
-        '''
-        return os.path.abspath(f'{base}/{link}')
+        out = os.path.abspath(f'{base}/{link}')
+        if os.path.exists(out):
+            return out
+        else:
+            return ''
 
 
 def encode_img(file: str) -> str:

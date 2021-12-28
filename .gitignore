@@ -1,6 +1,6 @@
 /.idea/
 /dist/*
 /tests/
-/README.base64.html
+/build/README.base64.html
 __enamlcache__
 __pycache__

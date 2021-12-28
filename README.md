@@ -8,10 +8,22 @@
 2. 单文件输出. 无需考虑 markdown 中引用的本地路径的图片, 因为它们已经被嵌入在 html 文件中
 3. 便于分享. 您只需要将此 html 文件发送给朋友, 对方即可看到完整的页面内容
 
+![](./.assets/aZG9Z7XhqO.gif)
+
 # 快速开始
 
+## 通过 GUI 启动
+
+从 Release 页面下载压缩包, 解压后得到 exe 程序, 双击即可启动.
+
+## 通过脚本启动
+
+将本项目克隆到本地, 并新建一个下面的脚本文件来启动:
+
 ```python
-from markdown_images_to_base64 import md_2_html
+# 先将 md_img_2_b64 的父目录加入到 sys.path 中.
+
+from md_img_2_b64 import md_2_html
 
 md_2_html(
    file_i=input('Input a markdown file (*.md, abspath): '),
@@ -22,117 +34,27 @@ md_2_html(
 )
 ```
 
-[TODO:AddScreenshots]
+# 其他说明
 
---------------------------------------------------------------------------------
+## 关于依赖选项
 
-以下为详细说明.
+本项目以及安装程序均没有自带依赖, 您需要自行先安装 python 和相关依赖库.
 
-# 安装
-
-| 版本 | 说明 | 链接 |
-| ---- | ---- | ---- |
-| 直装版 (标准版) | 如果您电脑上有安装 [Depsland][0], 请下载此版本 (体积 ???) | [TODO:ToBeUploaded] |
-| 直装版 (完整版) | 如果您电脑上没有安装 [Depsland][0], 请下载此版本 (体积 ???) | [TODO:ToBeUploaded] |
-| 源代码版 | 克隆本项目到本地 | - |
-
-[0]: https://github.com/likianta/depsland
-
-## 直装版如何安装
-
-1. 下载后得到一个 zip 压缩包
-2. 解压它到一个非中文路径下
-3. 双击根目录下的 "setup.bat", 完成安装
-   1. 标准版在安装过程中可能需要联网, 完整版不需要
-
-[TODO:AddScreenshots]
-
-## 源代码版如何安装
-
-使用 git 命令克隆本项目到本地: 
+依赖清单在 "requirements.txt" 文件中给出:
 
 ```
-git clone https://github.com/Likianta/markdown-images-to-base64.git
+fire
+lk-logger
+lk-utils
+markdown2
+pysimplegui
 ```
-
-**关于依赖选项**
-
-本项目主要包含了两大模块: 转换模块以及 GUI 模块.
-
-如果只使用前者, 请 pip 安装 requirements 文件中列出的依赖:
-
-```
-pip install lk-logger
-        ... lk-utils
-        ... markdown2
-```
-
-如果还需要用到后者, 在前者的基础上, 安装以下依赖 (注意体积会很大):
-
-```
-pip install enaml
-        ... lk-qtquick-scaffold
-        ... pyside2
-```
-
-值得注意的是, GUI 是基于 enaml 开发的实验性功能, 它存在一些兼容性问题: 您必须使用 Python 3.8 解释器版本. 因为 enaml 在 Python 3.9 版本会报标准库引起的错误 (相关见 [这个讨论](https://docs.python.org/3/whatsnew/3.8.html#cpython-bytecode-changes)).
-
-# 如何使用
-
-## 无 GUI 界面
-
-```
-markdown_images_to_base64 (cloned_project)
-|= examples
-   |= .assets
-      |- hello.gif
-      |- msoffice.png
-   |- demo.md           :: 这是要转换的文件 (以下是原文内容)
-      |
-      |     Here are local images to test:
-      |
-      |     ![Microsoft Office Suits](.assets/msoffice.png)
-      |
-      |     ![Hello](.assets/hello.gif)
-      |
-   |- test_convert.py   : 我们使用这个脚本来测试转换效果
-   |- ...
-|= markdown_images_to_base64
-   |- __init__.py
-   |- launch_gui.py
-   |- ...
-```
-
-```python
-# examples/test_convert.py
-from markdown_images_to_base64 import md_2_html
-
-md_2_html("./demo.md")
-#   params[0]: file_i: str. 要输入的文件的路径, 文件类型必须是 ".md".
-#   params[1]: file_o: optional[str]. 输出文件位置.
-#       None: 在 file_i 同一目录下生成同名的, 后缀为 ".base64.html" 的文件.
-#       str: 自己指定一个要输出的文件的路径.
-#           - 后缀必须为 ".html".
-#           - 如果目标文件存在, 则会被覆盖.
-
-```
-
-## GUI 界面 (可选)
-
-1. 运行 'markdown_images_to_base64/launch_gui.py', 弹出可视化界面
-
-   ![image-20201026153247849](.assets/image-20201026153247849.png)
-
-2. 输入或选择 .md 文件, 点击 "Run" 按钮
-
-3. 提示生成成功, 生成文件与 markdown 文件在同一目录, 与 markdown 文件同名 (后者后缀是 ".base64.html" )
-
-   ![image-20201026153418122](.assets/image-20201026153418122.png)
 
 # 注意事项
 
-1. 目前仅支持对本地图片的获取和编码
-2. 当图片较多时, 需要较长的处理时间 (待优化)
+1. 目前仅支持对本地图片的获取和编码, 网络图片仍然保持原链接.
+2. 当图片较多时, 需要较长的处理时间.
+3. 要求 Python 版本为 3.8 及以上.
 
 # 开发者说明
 
@@ -142,7 +64,7 @@ md_2_html("./demo.md")
 
 使用浏览器的 "转换为 mhtml" 功能, 生成的 .mhtml 文件的大小为 90kb; 使用 markdown_images_to_base64 的 `md_2_html` 生成的 'examples/demo.base64.html' 文件的大小为 86kb.
 
-![image-20201026152235057](.assets/image-20201026152235057.png)
+![image-20201026152235057](.assets/20201026152235057.png)
 
 结论:
 

@@ -17,7 +17,7 @@ def launch_qml():
 
 
 def debug():
-    from qml_gui import control
+    from extensions.qml_gui import control
     control.main()
     
     # noinspection PyPackageRequirements

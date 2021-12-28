@@ -19,9 +19,10 @@ def html_2_html(file_i, file_o=''):
     before_body, body, after_body = extract_html_body(html)
     
     for link, path in fetch_image_links(body):
-        b64 = encode_img(get_img_path(fdir, path))
-        new_link = link.replace(path, b64)
-        body = body.replace(link, new_link)
+        if local_path := get_img_path(fdir, path):
+            b64 = encode_img(local_path)
+            new_link = link.replace(path, b64)
+            body = body.replace(link, new_link)
     
     with open(file_o, 'w', encoding='utf-8') as f:
         f.write(before_body + body + after_body)

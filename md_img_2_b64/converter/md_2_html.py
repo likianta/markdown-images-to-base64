@@ -23,8 +23,8 @@ def md_2_html(file_i: str, file_o=''):
         content = f.read()
     
     for pattern, link in fetch_image_links(content):
-        if img_path := get_img_path(filedir, link):
-            b64 = encode_img(img_path)
+        if local_path := get_img_path(filedir, link):
+            b64 = encode_img(local_path)
             new_pattern = pattern.replace(link, b64)
             content = content.replace(pattern, new_pattern, 1)
             ''' Note: 该方法不够稳定, 存在以下风险:

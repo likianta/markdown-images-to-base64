@@ -23,12 +23,13 @@ def md_2_md(file_i, file_o='', target_format='html_img_tag'):
         content = f.read()
     
     for link, path in fetch_image_links(content):
-        b64 = encode_img(get_img_path(filedir, path))
-        if target_format == 'markdown_image_link':
-            new_link = link.replace(path, b64)
-        else:
-            new_link = f'<img src="{b64}">'
-        content = content.replace(link, new_link)
+        if local_path := get_img_path(filedir, path):
+            b64 = encode_img(local_path)
+            if target_format == 'markdown_image_link':
+                new_link = link.replace(path, b64)
+            else:
+                new_link = f'<img src="{b64}">'
+            content = content.replace(link, new_link)
     
     with open(file_o, 'w', encoding='utf-8') as f:
         f.write(content)
