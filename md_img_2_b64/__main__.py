@@ -1,7 +1,4 @@
 """
-requirements:
-    pip install fire
-
 usage in cmd:
     python -m md_img_2_b64 --help
     python -m md_img_2_b64 md2md
@@ -9,11 +6,15 @@ usage in cmd:
     python -m md_img_2_b64 html2html
 """
 import os.path
+from functools import wraps
+
+from argsense import cli
 
 import md_img_2_b64
 
 
 def _auto_get_output_path(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         if 'file_o' in kwargs:
             file_o = kwargs['file_o']
@@ -41,25 +42,23 @@ def _auto_get_output_path(func):
     return wrapper
 
 
-class Cli:
-    """
-    the method names don't inclulde underlines, this is friendly for user input.
-    """
-    
-    @_auto_get_output_path
-    def md2md(self, file_i, file_o=''):
-        return md_img_2_b64.md_2_md(file_i, file_o)
-    
-    @_auto_get_output_path
-    def md2html(self, file_i, file_o=''):
-        return md_img_2_b64.md_2_html(file_i, file_o)
-    
-    @_auto_get_output_path
-    def html2html(self, file_i, file_o=''):
-        return md_img_2_b64.html_2_html(file_i, file_o)
+@cli.cmd()
+@_auto_get_output_path
+def md2md(file_i, file_o=''):
+    return md_img_2_b64.md_2_md(file_i, file_o)
+
+
+@cli.cmd()
+@_auto_get_output_path
+def md2html(file_i, file_o=''):
+    return md_img_2_b64.md_2_html(file_i, file_o)
+
+
+@cli.cmd()
+@_auto_get_output_path
+def html2html(file_i, file_o=''):
+    return md_img_2_b64.html_2_html(file_i, file_o)
 
 
 if __name__ == '__main__':
-    from fire import Fire
-    
-    Fire(Cli())
+    cli.run()
