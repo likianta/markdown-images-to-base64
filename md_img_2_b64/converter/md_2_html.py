@@ -80,8 +80,8 @@ def compose_html(
     Args:
         title: Suggest passing filename (without suffix) or the first line of
             `md` as title.
-        md: The markdown text.
-        css: For now (2020-11-26) we only support Github flavored markdown theme
+        md: The Markdown text.
+        css: For now (2020-11-26) we only support GitHub flavored markdown theme
             (see https://github.com/sindresorhus/github-markdown-css), in
             theoretically, any class-less markdown stylesheets can also be
             available (thus Typora themes not meet the requirements.)

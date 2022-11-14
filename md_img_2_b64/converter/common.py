@@ -1,8 +1,6 @@
 import base64
 import os
 
-from lk_logger import lk
-
 
 def refmt_io(func):  # a decorator
     assert func.__name__ in ('md_2_html', 'md_2_md', 'html_2_html'), (
@@ -20,9 +18,9 @@ def refmt_io(func):  # a decorator
                 os.path.splitext(os.path.basename(file_i))[0],
                 ext_o
             )
-        lk.logp(file_i, file_o)
+        print(file_i, file_o)
         if os.path.exists(file_o):
-            lk.loga('the target file already exists, it will be overriden')
+            print('the target file already exists, it will be overriden')
         return func(file_i, file_o, *args, **kwargs)
     
     return _refmt_io

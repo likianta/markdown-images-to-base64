@@ -5,59 +5,26 @@ usage in cmd:
     python -m md_img_2_b64 md2html
     python -m md_img_2_b64 html2html
 """
-import os.path
-from functools import wraps
 
 from argsense import cli
 
-import md_img_2_b64
-
-
-def _auto_get_output_path(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        if 'file_o' in kwargs:
-            file_o = kwargs['file_o']
-        else:
-            file_o = args[1]
-        if not file_o:  # file_o is None or file_o == ''
-            file_i = kwargs.get('file_i') or args[0]
-            ext_i = os.path.splitext(file_i)[1]
-            ext_o = {
-                'md2md'    : '.base64.md',
-                'md2html'  : '.base64.html',
-                'html2html': '.base64.html',
-            }[func.__name__]
-            file_o = file_i.removesuffix(ext_i) + ext_o
-        
-        if 'file_o' in kwargs:
-            kwargs['file_o'] = file_o
-        else:
-            args = (args[0], file_o)
-        
-        file_o = func(*args, **kwargs)
-        print('output:', file_o)
-        return file_o
-    
-    return wrapper
-
 
 @cli.cmd()
-@_auto_get_output_path
 def md2md(file_i, file_o=''):
-    return md_img_2_b64.md_2_md(file_i, file_o)
+    from . import md_2_md
+    return md_2_md(file_i, file_o or file_i[:-3] + '.b64.md')
 
 
 @cli.cmd()
-@_auto_get_output_path
 def md2html(file_i, file_o=''):
-    return md_img_2_b64.md_2_html(file_i, file_o)
+    from . import md_2_html
+    return md_2_html(file_i, file_o or file_i[:-3] + '.b64.html')
 
 
 @cli.cmd()
-@_auto_get_output_path
 def html2html(file_i, file_o=''):
-    return md_img_2_b64.html_2_html(file_i, file_o)
+    from . import html_2_html
+    return html_2_html(file_i, file_o or file_i[:-5] + '.b64.html')
 
 
 if __name__ == '__main__':
