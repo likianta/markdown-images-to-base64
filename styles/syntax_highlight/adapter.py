@@ -1,15 +1,14 @@
 """
 Change 'highlight' class to 'codehilite' in 'assets/syntax_highlight/*'.
 """
-from lk_logger import lk
 from lk_utils.filesniff import findall_files
 from lk_utils.read_and_write import read_file, write_file
 
 
 def main(idir, odir):
-    
-    for path, name in findall_files(idir, 'zip', '.css'):
-        lk.logax(name)
+    print(':i0')
+    for path, name in findall_files(idir, suffix='.css'):
+        print(':i', name)
         ifile, ofile = path, f'{odir}/{name}'
         rdata = read_file(ifile)
         wdata = rdata.replace('.highlight', '.codehilite')
