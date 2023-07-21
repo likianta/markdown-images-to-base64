@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "markdown-images-to-base64"
+version = "0.1.0"
+description = ""
+authors = ["likianta <likianta@foxmail.com>"]
+readme = "README.md"
+packages = [{include = "markdown_images_to_base64"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+argsense = "*"
+lk-logger = "*"
+lk-utils = "*"
+markdown2 = "*"
+pysimplegui = "*"
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+priority = "default"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
